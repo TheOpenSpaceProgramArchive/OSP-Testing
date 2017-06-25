@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class MouseManager : MonoBehaviour {
 	[SerializeField] public string load = "Box";
-	[SerializeField] private bool test = false;
+	[SerializeField] public bool test = false;
+	[SerializeField] private GameObject Vessel;
+	[SerializeField] private UpdateUI stats;
 
 	// Use this for initialization
 	void Start() {
@@ -18,6 +21,31 @@ public class MouseManager : MonoBehaviour {
 			foreach (GameObject snappoint in snappoints) {
 				Destroy(snappoint.gameObject);
 			}
+			Vessel.GetComponent<Vessel>().enabled = true;
+			stats.enabled = true;
+
+
+			Transform[] vesselchilds = Vessel.GetComponentsInChildren<Transform>();
+			GameObject lowestChild = Vessel;
+			foreach (Transform child in vesselchilds) {
+				if (child.position.y < lowestChild.transform.position.y) {
+					lowestChild = child.gameObject;
+				}
+			}
+			Mesh mesh = lowestChild.GetComponent<MeshFilter>().mesh;
+			Vector3[] vertices = mesh.vertices;
+			float lowest = Mathf.Infinity;
+			int i = 0;
+			while (i < vertices.Length) {
+				if(vertices[i].y < lowest) lowest = vertices[i].y;
+				i++;
+			}
+			Instantiate(
+				Resources.Load("Plane"),
+				new Vector3(0f, lowest - 0.5f, 0f),
+				Quaternion.identity
+			);
+
 			test = false;
 		}
 		if (Input.GetMouseButtonDown(0)) {
@@ -41,5 +69,9 @@ public class MouseManager : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void ChangeTest() {
+		test = true;
 	}
 }
