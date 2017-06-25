@@ -1,33 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f0078429-a184-45d2-9682-d90bda63f188" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Models/Materials/Material.001.mat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Models/Materials/Material.001.mat.meta" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Models/Materials/Material_001.mat" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Models/Materials/Material_001.mat.meta" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Resources/Parts/Cylinder.prefab" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assets/Resources/Parts/Cylinder.prefab.meta" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Box.mat" afterPath="$PROJECT_DIR$/Assets/Materials/Box.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/DarkGreen.mat" afterPath="$PROJECT_DIR$/Assets/Materials/DarkGreen.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Green.mat" afterPath="$PROJECT_DIR$/Assets/Materials/Green.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Red.mat" afterPath="$PROJECT_DIR$/Assets/Materials/Red.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/White.mat" afterPath="$PROJECT_DIR$/Assets/Materials/White.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Yellow.mat" afterPath="$PROJECT_DIR$/Assets/Materials/Yellow.mat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Resources/Parts/Box.prefab" afterPath="$PROJECT_DIR$/Assets/Resources/Parts/Box.prefab" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Scenes/VAB.unity" afterPath="$PROJECT_DIR$/Assets/Scenes/VAB.unity" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" afterPath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.OSP Testing/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/.idea.OSP Testing/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.OSP Testing/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.OSP Testing/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/DarkGreen.mat.meta" afterPath="$PROJECT_DIR$/Assets/Materials/DarkGreen.mat.meta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Green.mat.meta" afterPath="$PROJECT_DIR$/Assets/Materials/Green.mat.meta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Red.mat.meta" afterPath="$PROJECT_DIR$/Assets/Materials/Red.mat.meta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/White.mat.meta" afterPath="$PROJECT_DIR$/Assets/Materials/White.mat.meta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Materials/Yellow.mat.meta" afterPath="$PROJECT_DIR$/Assets/Materials/Yellow.mat.meta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assets/Scripts/MouseManager.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/MouseManager.cs" />
-    </list>
+    <list default="true" id="f0078429-a184-45d2-9682-d90bda63f188" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -426,12 +400,20 @@
       <workItem from="1498330217840" duration="13943000" />
       <workItem from="1498351123815" duration="473000" />
       <workItem from="1498370314219" duration="8640000" />
-      <workItem from="1498412399807" duration="11999000" />
+      <workItem from="1498412399807" duration="12045000" />
     </task>
+    <task id="LOCAL-00001" summary="Added Rockets">
+      <created>1498431856270</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1498431856270</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59302000" />
+    <option name="totallyTimeSpent" value="59348000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -501,6 +483,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added Rockets" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Rockets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

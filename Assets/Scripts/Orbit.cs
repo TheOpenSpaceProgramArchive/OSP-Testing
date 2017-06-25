@@ -46,11 +46,12 @@ public class Orbit : MonoBehaviour {
 		//Semi Minor Axis = B
 		//Semi Focal Axis = C
 		//A^2 = B^2 + C^2
-		//ECC = C/A
-		semiMinorAxis = SMA * ECC;
+		//ECC = A/C
+		//ECC * C = A
+		semiFocalAxis = SMA*ECC;
 		//Too Lazy to Mathf.Pow :v
 		
-		semiFocalAxis = Mathf.Sqrt(SMA * SMA - semiMinorAxis * semiMinorAxis);
+		semiMinorAxis = Mathf.Sqrt(SMA * SMA - semiFocalAxis * semiFocalAxis);
 		
 		//Calculate distance between the body and the reference body
 		//This helps us calculate the orbital Velocity
@@ -72,9 +73,9 @@ public class Orbit : MonoBehaviour {
 		}
 		//Calculate the position with center on the Reference Body
 		Vector3 newpos = new Vector3(
-			(Mathf.Cos(MNA) * SMA),
+			(Mathf.Sin(MNA) * SMA),
 			0,
-			(ECC)*(Mathf.Sin(MNA) * SMA)
+			(Mathf.Cos(MNA) * semiMinorAxis)
 		);
 		
 		//Rotate the orbit in relation to the LPE
@@ -82,7 +83,7 @@ public class Orbit : MonoBehaviour {
 		//Translate the orbit in relation to the Reference Body
 		newpos += REF.transform.position;
 		//Translate the orbit so the Reference body its on one of the foci
-		newpos -= (Vector3.right * semiFocalAxis/2).RotateXZ(LPE);
+		newpos -= (Vector3.right * semiFocalAxis).RotateXZ(LPE);
 		//Moves the body and applies the inclination
 		transform.position = Quaternion.AngleAxis(INC, Vector3.forward) * newpos;
 		
