@@ -7,7 +7,6 @@ public class MouseManager : MonoBehaviour {
 	[SerializeField] public string load = "Box";
 	[SerializeField] public bool test = false;
 	[SerializeField] private GameObject Vessel;
-	[SerializeField] private UpdateUI stats;
 
 	// Use this for initialization
 	void Start() {
@@ -22,7 +21,6 @@ public class MouseManager : MonoBehaviour {
 				Destroy(snappoint.gameObject);
 			}
 			Vessel.GetComponent<Vessel>().enabled = true;
-			stats.enabled = true;
 
 
 			Transform[] vesselchilds = Vessel.GetComponentsInChildren<Transform>();
@@ -56,8 +54,8 @@ public class MouseManager : MonoBehaviour {
 
 
 			if (Physics.Raycast(ray, out hit)) {
-				Debug.Log(hit.collider.tag);
-				Debug.Log(hit.collider.name);
+//				Debug.Log(hit.collider.tag);
+//				Debug.Log(hit.collider.name);
 				if (hit.collider.tag == "Snappoint") {
 					Instantiate(
 						Resources.Load("Parts/" + load),

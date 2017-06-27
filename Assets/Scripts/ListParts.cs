@@ -17,12 +17,7 @@ public class ListParts : MonoBehaviour {
 		_scripts = GameObject.Find("_Scripts");
 		parts = Resources.LoadAll("Parts/", typeof(GameObject)).Cast<GameObject>().ToArray();
 		foreach (GameObject part in parts) {
-			Debug.Log(part);
-		}
-		foreach (var part in parts)
-		{
-			_dropdown.options.Add(new Dropdown.OptionData()
-			{
+			_dropdown.options.Add(new Dropdown.OptionData() {
 				text = part.name
 			});
 		}

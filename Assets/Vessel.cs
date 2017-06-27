@@ -5,6 +5,7 @@ using UnityEngine;
 public class Vessel : MonoBehaviour {
 	private Thruster[] Thrusters;
 	private Part[] Parts;
+	private ResourceContainer[] ResourceContainers;
 
 	[SerializeField]
 	public float TTW;
@@ -12,6 +13,12 @@ public class Vessel : MonoBehaviour {
 	public float TotalThrust;
 	[SerializeField]
 	public float TotalMass;
+	[SerializeField]
+	public float TotalFuel;
+
+	public float UsedFuel = 0f;
+
+	public string SAS = "Stabilization";
 
 	[SerializeField]
 	public float Throtle = 0f;
@@ -25,10 +32,12 @@ public class Vessel : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		Thrusters = GetComponentsInChildren<Thruster>();
 		Parts = GetComponentsInChildren<Part>();
+		ResourceContainers = GetComponentsInChildren<ResourceContainer>();
 
 		rb.useGravity = true;
 		rb.isKinematic = false;
 		GetComponent<ReactionWheel>().enabled = true;
+		GetComponent<DrawStats>().enabled = true;
 		foreach (Thruster thruster in Thrusters) {
 			thruster.enabled = true;
 		}
@@ -40,6 +49,9 @@ public class Vessel : MonoBehaviour {
 		TotalThrust = 0;
 		TotalMass = 0;
 		TTW = 0;
+		TotalFuel = 0;
+
+		bool isFuelTaken = true;
 
 		//Throtle Control
 		Throtle += Input.GetAxis("Throtle");
@@ -53,11 +65,24 @@ public class Vessel : MonoBehaviour {
 
 
 		foreach (var part in Parts) {
-			TotalMass += part.GetComponent<Part>().mass;
+			TotalMass += part.mass;
 		}
 		foreach (var thruster in Thrusters) {
-			TTW += thruster.GetComponent<Thruster>().mfr *
-			       thruster.GetComponent<Thruster>().exhaustvelocity;
+			TTW += thruster.mfr * thruster.exhaustvelocity;
+		}
+		foreach (var resourceContainer in ResourceContainers) {
+			TotalFuel += resourceContainer.LiquidFuel;
+			if (resourceContainer.LiquidFuel > 0 && isFuelTaken) {
+				isFuelTaken = false;
+				//Used fuel is thruster.MFR (Which is always negative)
+				if (resourceContainer.LiquidFuel + UsedFuel * Time.deltaTime < 0) {
+					resourceContainer.LiquidFuel = 0;
+				}
+				else {
+					resourceContainer.LiquidFuel += UsedFuel * Time.deltaTime;
+				}
+				UsedFuel = 0;
+			}
 		}
 		TTW /= (-gravity * TotalMass);
 	}

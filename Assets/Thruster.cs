@@ -34,16 +34,20 @@ public class Thruster : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		throtle = vessel.Throtle;
+		if (vessel.TotalFuel > 0) {
+			throtle = vessel.Throtle;
 
-		if (thrust != 0f) {
-			mfr = thrust / (isp * gravity) * throtle / 100;
+			if (thrust != 0f) {
+				mfr = thrust / (isp * gravity) * throtle / 100;
 
-			exhaustvelocity = gravity * isp;
-			//Thrust=Mass ejection rate×Speed of ejection
-			TTW = (mfr * exhaustvelocity) / (vessel.TotalMass * -gravity);
+				exhaustvelocity = gravity * isp;
+				//Thrust=Mass ejection rate×Speed of ejection
+				TTW = (mfr * exhaustvelocity) / (vessel.TotalMass * -gravity);
 
-			rb.AddForce(TTW * gravity * -transform.parent.up, ForceMode.Force);
+				vessel.UsedFuel += mfr;
+
+				rb.AddForce(TTW * gravity * transform.forward, ForceMode.Force);
+			}
 		}
 
 	}
