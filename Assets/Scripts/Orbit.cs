@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using ADBannerView = UnityEngine.iOS.ADBannerView;
+﻿using UnityEngine;
 
 public class Orbit : MonoBehaviour {
 	
@@ -86,15 +83,17 @@ public class Orbit : MonoBehaviour {
 		newpos -= (Vector3.right * semiFocalAxis).RotateXZ(LPE);
 		//Moves the body and applies the inclination
 		transform.position = Quaternion.AngleAxis(INC, Vector3.forward) * newpos;
+
+
 		
-/*PE & AP
+//PE & AP
 		Markers[0].transform.position = Quaternion.AngleAxis(INC, Vector3.forward) *
-			(REF.transform.position +
-			(Vector3.right * semiFocalAxis / 2).RotateXZ(LPE));
-		
+			(REF.transform.position -
+			(Vector3.right * (semiFocalAxis - SMA))).RotateXZ(LPE);
+
 		Markers[1].transform.position = Quaternion.AngleAxis(INC, Vector3.forward) *
-		                                (REF.transform.position -
-		                                (Vector3.right * SMA*1.5f).RotateXZ(LPE));
-	*/
+		(REF.transform.position -
+		(Vector3.right * (semiFocalAxis + SMA))).RotateXZ(LPE);;
+
 	}
 }
