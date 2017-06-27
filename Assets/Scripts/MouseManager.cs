@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+// ReSharper disable All
 
 public class MouseManager : MonoBehaviour {
 	[SerializeField] public string load = "Box";
 	[SerializeField] public bool test = false;
 	[SerializeField] private GameObject Vessel;
-
+	private Camera cam;
+	RaycastHit hit;
 	// Use this for initialization
 	void Start() {
-
+		cam = Camera.main;
 	}
 
 	// Update is called once per frame
@@ -46,24 +48,41 @@ public class MouseManager : MonoBehaviour {
 
 			test = false;
 		}
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+
 		if (Input.GetMouseButtonDown(0)) {
-			Camera cam = Camera.main;
-
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-
-
 			if (Physics.Raycast(ray, out hit)) {
-//				Debug.Log(hit.collider.tag);
-//				Debug.Log(hit.collider.name);
-				if (hit.collider.tag == "Snappoint") {
+				if (hit.collider.CompareTag("Snappoint")) {
+
+					Vector3 spawnpoint = hit.collider.transform.position +
+					hit.collider.transform.rotation * Vector3.forward * 0.5f;
+
 					Instantiate(
 						Resources.Load("Parts/" + load),
-						hit.collider.transform.position +
-						hit.collider.transform.rotation * Vector3.forward * 0.5f,
+						spawnpoint,
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
+					//If symetry
+					if (Mathf.Abs(spawnpoint.x) > 0.1f ||
+					    Mathf.Abs(spawnpoint.z) > 0.1f) {
+						for (var i = 1; i < 4; i++) {
+							Instantiate(
+								Resources.Load("Parts/" + load),
+								Quaternion.AngleAxis(90f * i, Vector3.up) * spawnpoint,
+								Quaternion.AngleAxis(90f * i, Vector3.up) * hit.collider.transform.rotation,
+								hit.collider.transform.root
+							);
+						}
+					}
+				}
+			}
+		}
+		if (Input.GetMouseButtonDown(1)) {
+			if (Physics.Raycast(ray, out hit)) {
+				if (hit.collider.transform.parent.CompareTag("Part")) {
+					Destroy(hit.collider.transform.parent.gameObject);
 				}
 			}
 		}

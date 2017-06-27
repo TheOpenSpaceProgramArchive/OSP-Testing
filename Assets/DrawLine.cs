@@ -24,7 +24,7 @@ public class DrawLine : MonoBehaviour {
 		rb = vessel.GetComponent<Rigidbody>();
 		_vessel = vessel.GetComponent<Vessel>();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (_vessel.SAS == "Prograde") {

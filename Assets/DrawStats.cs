@@ -8,6 +8,12 @@ public class DrawStats : MonoBehaviour {
 	private Rigidbody rb;
 	private Vessel stats;
 	int width = 180;
+
+	//[SerializeField]
+	//public GUIStyle customGuiStyle;
+	//add customGuiStyle as last argument
+	//https://docs.unity3d.com/Manual/class-GUISkin.html
+
 	void Start() {
 		rb = GetComponent<Rigidbody>();
 		stats = GetComponent<Vessel>();
