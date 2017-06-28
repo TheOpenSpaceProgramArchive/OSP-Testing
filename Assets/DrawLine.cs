@@ -11,9 +11,6 @@ public class DrawLine : MonoBehaviour {
 	private GameObject vessel;
 
 
-	[Range(1f, 10f)]
-	[SerializeField]
-	private float length = 1;
 
 	private Rigidbody rb;
 

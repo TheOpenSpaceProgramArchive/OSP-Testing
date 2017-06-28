@@ -28,6 +28,8 @@ public class Orbit : MonoBehaviour {
 
 	private Vector3 PE;
 	private Vector3 AP;
+	[SerializeField]
+	private int multiplier = 1;
 
 	[SerializeField]
 	private GameObject[] Markers = new GameObject[2];
@@ -59,7 +61,7 @@ public class Orbit : MonoBehaviour {
 		
 		//Using Kepler's Laws, we get the Orbital Velocity
 		//Its divided by 10000 so it doesnt go too fast (havent worked a scale yet)
-		OrbitalVelocity = Mathf.Sqrt((G*Mass)/Distance)/10000;
+		OrbitalVelocity = Mathf.Sqrt((G*Mass)/Distance)/ (multiplier * 1000);
 		
 		//Getting the Angle for the position of the Vessel
 		//We add a degree * Orbital velocity, because the orbit its relative to the velocity

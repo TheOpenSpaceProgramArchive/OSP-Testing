@@ -5,11 +5,21 @@ using UnityEngine;
 // ReSharper disable All
 
 public class MouseManager : MonoBehaviour {
-	[SerializeField] public string load = "Box";
-	[SerializeField] public bool test = false;
-	[SerializeField] private GameObject Vessel;
+	[SerializeField]
+	public string load = "Box";
+	[SerializeField]
+	public bool test = false;
+	[SerializeField]
+	private GameObject Vessel;
+
+	[SerializeField]
+	private int symetry = 1;
 	private Camera cam;
 	RaycastHit hit;
+
+	private GameObject gizmo = null;
+
+	private GameObject translationGizmo = null;
 	// Use this for initialization
 	void Start() {
 		cam = Camera.main;
@@ -50,13 +60,13 @@ public class MouseManager : MonoBehaviour {
 		}
 		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-
 		if (Input.GetMouseButtonDown(0)) {
 			if (Physics.Raycast(ray, out hit)) {
+				gizmo = hit.collider.gameObject;
 				if (hit.collider.CompareTag("Snappoint")) {
 
 					Vector3 spawnpoint = hit.collider.transform.position +
-					hit.collider.transform.rotation * Vector3.forward * 0.5f;
+					                     hit.collider.transform.rotation * Vector3.forward * 0.5f;
 
 					Instantiate(
 						Resources.Load("Parts/" + load),
@@ -64,29 +74,65 @@ public class MouseManager : MonoBehaviour {
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
-					//If symetry
-					if (Mathf.Abs(spawnpoint.x) > 0.1f ||
-					    Mathf.Abs(spawnpoint.z) > 0.1f) {
-						for (var i = 1; i < 4; i++) {
-							Instantiate(
-								Resources.Load("Parts/" + load),
-								Quaternion.AngleAxis(90f * i, Vector3.up) * spawnpoint,
-								Quaternion.AngleAxis(90f * i, Vector3.up) * hit.collider.transform.rotation,
-								hit.collider.transform.root
-							);
+					if (symetry > 1) {
+						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
+						    Mathf.Abs(spawnpoint.z) > 0.1f) {
+							for (var i = 1; i < symetry; i++) {
+								Instantiate(
+									Resources.Load("Parts/" + load),
+									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * spawnpoint,
+									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * hit.collider.transform.rotation,
+									hit.collider.transform.root
+								);
+							}
 						}
 					}
 				}
 			}
 		}
+
+		if (Input.GetMouseButton(0)) {
+			if (gizmo != null) {
+				if (gizmo.name == "X") {
+					hit.collider.gameObject.transform.parent.transform.parent.Translate(
+						transform.right * Input.GetAxis("Mouse X")
+					);
+				}
+				if (gizmo.name == "Y") {
+					hit.collider.gameObject.transform.parent.transform.parent.Translate(
+						transform.up * Input.GetAxis("Mouse X")
+					);
+				}
+				if (gizmo.name == "Z") {
+					hit.collider.gameObject.transform.parent.transform.parent.Translate(
+						transform.forward * Input.GetAxis("Mouse X")
+					);
+				}
+			}
+		}
+
+		if (Input.GetMouseButtonUp(0)) {
+			gizmo = null;
+		}
+
 		if (Input.GetMouseButtonDown(1)) {
 			if (Physics.Raycast(ray, out hit)) {
 				if (hit.collider.transform.parent.CompareTag("Part")) {
-					Destroy(hit.collider.transform.parent.gameObject);
+					//Destroy(hit.collider.transform.parent.gameObject);
+					if (translationGizmo != null) {
+						Destroy(translationGizmo.gameObject);
+					}
+					else {
+						translationGizmo = (GameObject) Instantiate(
+							Resources.Load("TranslationGizmo"),
+							hit.collider.transform.parent.gameObject.transform
+						);
+					}
 				}
 			}
 		}
 	}
+
 
 	public void ChangeTest() {
 		test = true;

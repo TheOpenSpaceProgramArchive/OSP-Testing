@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ReactionWheel : MonoBehaviour {
 	/*INFORMATION : Researching how angular momentum works at the momment:
@@ -37,6 +34,9 @@ public class ReactionWheel : MonoBehaviour {
 	private Rigidbody rb;
 
 	private Vessel vessel;
+
+	[SerializeField]
+	private float torqueMultiplier = 1;
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
@@ -44,18 +44,25 @@ public class ReactionWheel : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		transform.Rotate(
-			Input.GetAxis("Vertical"),
-			-Input.GetAxis("Roll"),
-			-Input.GetAxis("Horizontal")
+	void FixedUpdate () {
+		rb.AddRelativeTorque(
+			Input.GetAxis("Vertical") * torqueMultiplier,
+			-Input.GetAxis("Roll") * torqueMultiplier,
+			-Input.GetAxis("Horizontal") * torqueMultiplier
 		);
-/*
+
 		if (vessel.SAS == "Prograde") {
-			transform.rotation = Quaternion.Lerp(
-				transform.rotation,
-				Quaternion.Euler(rb.velocity),
-				Time.deltaTime);
-		}*/
+			Vector3 targetDelta = (transform.position + rb.velocity.normalized) - transform.position;
+			float angleDiff = Vector3.Angle(transform.forward, targetDelta);
+			Vector3 cross = Vector3.Cross(transform.up, targetDelta);
+			rb.AddTorque(cross * angleDiff * 0.5f);
+		}
+
+		if (vessel.SAS == "Retrograde") {
+			Vector3 targetDelta = (transform.position - rb.velocity.normalized) - transform.position;
+			float angleDiff = Vector3.Angle(transform.forward, targetDelta);
+			Vector3 cross = Vector3.Cross(transform.up, targetDelta);
+			rb.AddTorque(cross * angleDiff * 0.5f);
+		}
 	}
 }

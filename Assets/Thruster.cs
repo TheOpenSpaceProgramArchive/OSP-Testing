@@ -46,7 +46,11 @@ public class Thruster : MonoBehaviour {
 
 				vessel.UsedFuel += mfr;
 
-				rb.AddForce(TTW * gravity * transform.forward, ForceMode.Force);
+				rb.AddForceAtPosition(
+					TTW * gravity * transform.forward,
+					transform.position,
+					ForceMode.Force
+				);
 			}
 		}
 
