@@ -75,19 +75,19 @@ public class MouseManager : MonoBehaviour {
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
-					/*if (symetry > 1) {
+					if (symetry > 1) {
 						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
 						    Mathf.Abs(spawnpoint.z) > 0.1f) {
 							for (var i = 1; i < symetry; i++) {
-								Instantiate(
-									Resources.Load("Parts/" + load),
+								ExtensionMethods.InstantiateOut(
+									path,
 									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * spawnpoint,
 									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * hit.collider.transform.rotation,
 									hit.collider.transform.root
 								);
 							}
 						}
-					}*/
+					}
 				}
 			}
 		}
