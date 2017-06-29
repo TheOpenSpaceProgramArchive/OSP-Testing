@@ -59,7 +59,8 @@ public class TextureLoader : MonoBehaviour {
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("Error: Could not load DDS");
+            Debug.LogError("Error: Could not load DDS " + ex.ToString());
+
             return new Texture2D(8, 8);
         }
     }

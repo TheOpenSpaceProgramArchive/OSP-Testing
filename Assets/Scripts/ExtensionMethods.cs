@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Text.RegularExpressions;
+using LitJson;
 
 
 //This is really interesting
@@ -69,66 +72,54 @@ public static class ExtensionMethods {
 		return go;
 	}
 
+	private static float floatParse(LitJson.JsonData data) {
+		return float.Parse(data.ToString());
+	}
+	private static Vector3 VectorParse(LitJson.JsonData data) {
+		return new Vector3(
+			floatParse(data[0]),
+			floatParse(data[1]),
+			floatParse(data[2])
+			);
+	}
+
 	private static void ParseCfg(GameObject go, string path) {
-		string text = System.IO.File.ReadAllText(path + ".cfg");
-		text = text.Replace("\r\n", string.Empty).
-			Replace("\n", string.Empty).
-			Replace("\r", string.Empty).
-			Replace(":", string.Empty).
-			Replace(" ", string.Empty);
-		text = Regex.Replace(text, "[A-Za-z]", "");
+		string jsonString = File.ReadAllText(path + ".cfg");
+		JsonData data = JsonMapper.ToObject(jsonString);
+		IDictionary tdictionary = data;
 
-		string[] data = text.Split(new char[] {',' , ';' });
+		if (tdictionary.Contains("Part")) {
+			Part part = go.transform.parent.gameObject.AddComponent<Part>();
+			part.mass = floatParse(data["Part"]["Mass"]);
 
-		Part part = go.transform.parent.gameObject.AddComponent<Part>();
-		part.mass = float.Parse(data[0]);
+			go.transform.localPosition = VectorParse(data["Part"]["Position"]);
+			go.transform.localRotation = Quaternion.Euler(VectorParse(data["Part"]["Rotation"]));
+			go.transform.localScale = VectorParse(data["Part"]["Scale"]);
+		}
 
-		if (Math.Abs(float.Parse(data[1])) > 0.1) {
+		if (tdictionary.Contains("Thruster")) {
 			Thruster thruster = go.transform.parent.gameObject.AddComponent<Thruster>();
 			thruster.enabled = false;
-			thruster.isp = float.Parse(data[1]);
-			thruster.thrust = float.Parse(data[2]);
+			thruster.isp = floatParse(data["Thruster"]["ISP"]);
+			thruster.thrust = floatParse(data["Thruster"]["Thrust"]);
 		}
 
-		if (int.Parse(data[3]) == 1) {
+		if (tdictionary.Contains("ResourceContainer")) {
 			ResourceContainer resourceContainer = go.transform.parent.gameObject.AddComponent<ResourceContainer>();
-			resourceContainer.DryMass = part.mass;
-			resourceContainer.LiquidFuel = float.Parse(data[4]);
-			resourceContainer.Oxidizer = float.Parse(data[5]);
+			resourceContainer.DryMass = floatParse(data["Part"]["Mass"]);
+			resourceContainer.LiquidFuel = floatParse(data["ResourceContainer"]["LiquidFuel"]);
+			resourceContainer.Oxidizer = floatParse(data["ResourceContainer"]["Oxidizer"]);
 		}
 
-		go.transform.localPosition = new Vector3(
-			float.Parse(data[6]),
-			float.Parse(data[7]),
-			float.Parse(data[8])
-		);
-		go.transform.localRotation = Quaternion.Euler(
-			float.Parse(data[9]),
-			float.Parse(data[10]),
-			float.Parse(data[11])
-		);
-		go.transform.localScale = new Vector3(
-			float.Parse(data[12]),
-			float.Parse(data[13]),
-			float.Parse(data[14])
-		);
-
-
-		for (int i = 15; i < data.Length; i += 6) {
-			Object.Instantiate(
-				Resources.Load("Snappoint"),
-				new Vector3(
-					float.Parse(data[i]),
-					float.Parse(data[i+1]),
-					float.Parse(data[i+2])
-				),
-				Quaternion.Euler(
-					float.Parse(data[i+3]),
-					float.Parse(data[i+4]),
-					float.Parse(data[i+5])
-				),
-				go.transform.parent
-			);
+		if (tdictionary.Contains("Nodes")) {
+			foreach (JsonData node in data["Nodes"]) {
+				Object.Instantiate(
+					Resources.Load("Snappoint"),
+					VectorParse(node["Position"]),
+					Quaternion.Euler(VectorParse(node["Rotation"])),
+					go.transform.parent
+				);
+			}
 		}
 	}
 }
