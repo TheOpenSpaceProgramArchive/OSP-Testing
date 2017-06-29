@@ -102,6 +102,13 @@ public static class ExtensionMethods {
 			thruster.enabled = false;
 			thruster.isp = floatParse(data["Thruster"]["ISP"]);
 			thruster.thrust = floatParse(data["Thruster"]["Thrust"]);
+			GameObject flame = (GameObject) Object.Instantiate(
+				Resources.Load("Flame"),
+				VectorParse(data["Thruster"]["Flame"]["Position"]),
+				Quaternion.identity,
+				go.transform.parent
+			);
+			flame.SetActive(false);
 		}
 
 		if (tdictionary.Contains("ResourceContainer")) {

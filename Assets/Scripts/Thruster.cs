@@ -25,11 +25,14 @@ public class Thruster : MonoBehaviour {
 
 	private Rigidbody rb;
 
+	private GameObject flame;
+
 	private Vessel vessel;
 	// Use this for initialization
 	void Start () {
 		rb = transform.root.GetComponent<Rigidbody>();
 		vessel = transform.root.GetComponent<Vessel>();
+		flame = transform.GetComponentInChildren<ParticleSystem>(true).gameObject;
 	}
 	
 	// Update is called once per frame
@@ -52,6 +55,10 @@ public class Thruster : MonoBehaviour {
 					ForceMode.Force
 				);
 			}
+			flame.SetActive(throtle > 0);
+		}
+		else {
+			flame.SetActive(false);
 		}
 
 	}
