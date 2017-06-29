@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,34 +8,54 @@ using UnityEngine.UI;
 
 public class ListParts : MonoBehaviour {
 
-	public GameObject[] parts;
+	public List<String> parts = new List<string>();
 
 	private Dropdown _dropdown;
 
 	private GameObject _scripts;
+
+
+	public string[] folders;
+	public List<string> CategoryName = new List<string>();
+	public List<List<string>> Parts = new List<List<string>>();
+
 	// Use this for initialization
 	void Start () {
-		string[] folders = Directory.GetDirectories(Application.dataPath + "/../Data");
-		foreach (string str in folders) {
-			Debug.Log(str);
-		}
-
-
 		_dropdown = GetComponent<Dropdown>();
 		_scripts = GameObject.Find("_Scripts");
-		parts = Resources.LoadAll("Parts/", typeof(GameObject)).Cast<GameObject>().ToArray();
-		foreach (GameObject part in parts) {
-			_dropdown.options.Add(new Dropdown.OptionData() {
-				text = part.name
-			});
-		}
+
 
 		_dropdown.onValueChanged.AddListener(delegate {
 			OnValueChange(_dropdown);
 		});
+
+
+		folders = Directory.GetDirectories(
+			Application.dataPath + "/../Data/OSP/Parts"
+		);
+		for (int i = 0; i < folders.Length; i++) {
+			CategoryName.Add(folders[i].Substring(folders[i].LastIndexOf("\\") + 1));
+
+			Parts.Add(
+				new List<string>(Directory.GetDirectories(
+					Application.dataPath + "/../Data/OSP/Parts/" + CategoryName[i])
+				)
+			);
+		}
+
+		for (int i = 0; i < CategoryName.Count; i++) {
+			for (int j = 0; j < Parts[i].Count; j++) {
+				var part = Parts[i][j];
+				parts.Add(part);
+				_dropdown.options.Add(new Dropdown.OptionData() {
+					text = part.Substring(part.LastIndexOf("\\", StringComparison.Ordinal))
+				});
+			}
+		}
+
 	}
 	
 	private void OnValueChange(Dropdown target) {
-		_scripts.GetComponent<MouseManager>().load = parts[target.value].name;
+		_scripts.GetComponent<MouseManager>().path = parts[target.value];
 	}
 }

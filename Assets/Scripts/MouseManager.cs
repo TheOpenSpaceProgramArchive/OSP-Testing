@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MouseManager : MonoBehaviour {
 	[SerializeField]
-	public string load = "Box";
+	public string path = "Box";
 	[SerializeField]
 	public bool test = false;
 	[SerializeField]
@@ -44,15 +44,16 @@ public class MouseManager : MonoBehaviour {
 			}
 			Mesh mesh = lowestChild.GetComponent<MeshFilter>().mesh;
 			Vector3[] vertices = mesh.vertices;
-			float lowest = Mathf.Infinity;
-			int i = 0;
-			while (i < vertices.Length) {
-				if(vertices[i].y < lowest) lowest = vertices[i].y;
-				i++;
+			float lowest = 0f;
+			int iasda = 0;
+			while (iasda < vertices.Length) {
+				if(vertices[iasda].z > lowest) lowest = vertices[iasda].z;
+				iasda++;
 			}
+			Debug.Log(lowest);
 			Instantiate(
 				Resources.Load("Plane"),
-				new Vector3(0f, lowest - 0.5f, 0f),
+				new Vector3(0f, lowestChild.transform.position.y + lowest, 0f),
 				Quaternion.identity
 			);
 
@@ -68,13 +69,13 @@ public class MouseManager : MonoBehaviour {
 					Vector3 spawnpoint = hit.collider.transform.position +
 					                     hit.collider.transform.rotation * Vector3.forward * 0.5f;
 
-					Instantiate(
-						Resources.Load("Parts/" + load),
+					ExtensionMethods.InstantiateOut(
+						path,
 						spawnpoint,
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
-					if (symetry > 1) {
+					/*if (symetry > 1) {
 						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
 						    Mathf.Abs(spawnpoint.z) > 0.1f) {
 							for (var i = 1; i < symetry; i++) {
@@ -86,7 +87,7 @@ public class MouseManager : MonoBehaviour {
 								);
 							}
 						}
-					}
+					}*/
 				}
 			}
 		}
@@ -125,6 +126,8 @@ public class MouseManager : MonoBehaviour {
 					else {
 						translationGizmo = (GameObject) Instantiate(
 							Resources.Load("TranslationGizmo"),
+							hit.collider.transform.position/2,
+							hit.collider.transform.parent.rotation,
 							hit.collider.transform.parent.gameObject.transform
 						);
 					}
