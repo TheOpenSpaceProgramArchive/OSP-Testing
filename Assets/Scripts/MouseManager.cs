@@ -50,7 +50,6 @@ public class MouseManager : MonoBehaviour {
 				if(vertices[iasda].z > lowest) lowest = vertices[iasda].z;
 				iasda++;
 			}
-			Debug.Log(lowest);
 			Instantiate(
 				Resources.Load("Plane"),
 				new Vector3(0f, lowestChild.transform.position.y + lowest, 0f),
@@ -63,18 +62,27 @@ public class MouseManager : MonoBehaviour {
 
 		if (Input.GetMouseButtonDown(0)) {
 			if (Physics.Raycast(ray, out hit)) {
-				gizmo = hit.collider.gameObject;
 				if (hit.collider.CompareTag("Snappoint")) {
 
 					Vector3 spawnpoint = hit.collider.transform.position +
 					                     hit.collider.transform.rotation * Vector3.forward * 0.5f;
 
-					ExtensionMethods.InstantiateOut(
+					GameObject go = ExtensionMethods.InstantiateOut(
 						path,
 						spawnpoint,
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
+					if (hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
+						Decoupler decoupler = go.AddComponent<Decoupler>();
+						if (hit.collider.transform.parent.GetComponent<Decoupler>().Parent != null) {
+							decoupler.Parent = hit.collider.transform.parent.GetComponent<Decoupler>().Parent;
+						}
+						else {
+						decoupler.Parent = hit.collider.transform.parent.gameObject;
+						}
+					}
+
 					if (symetry > 1) {
 						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
 						    Mathf.Abs(spawnpoint.z) > 0.1f) {

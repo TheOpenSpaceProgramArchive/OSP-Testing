@@ -48,11 +48,11 @@ public class ListParts : MonoBehaviour {
 				var part = Parts[i][j];
 				parts.Add(part);
 				_dropdown.options.Add(new Dropdown.OptionData() {
-					text = part.Substring(part.LastIndexOf("\\", StringComparison.Ordinal))
+					text = ExtensionMethods.GetDetails(Parts[i][j])["Name"].ToString()
 				});
 			}
 		}
-
+		_scripts.GetComponent<MouseManager>().path = parts[0];
 	}
 	
 	private void OnValueChange(Dropdown target) {

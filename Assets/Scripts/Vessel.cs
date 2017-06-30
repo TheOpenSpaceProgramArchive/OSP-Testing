@@ -7,13 +7,9 @@ public class Vessel : MonoBehaviour {
 	private Part[] Parts;
 	private ResourceContainer[] ResourceContainers;
 
-	[SerializeField]
 	public float TTW;
-	[SerializeField]
 	public float TotalThrust;
-	[SerializeField]
 	public float TotalMass;
-	[SerializeField]
 	public float TotalFuel;
 
 	public float UsedFuel = 0f;
@@ -22,13 +18,14 @@ public class Vessel : MonoBehaviour {
 
 	[SerializeField]
 	public float Throtle = 0f;
-
 	private Rigidbody rb;
-
 	private float gravity = -9.807f;
 
+	[SerializeField]
+	public bool ActiveVessel;
+
 	// Use this for initialization
-	void Start () {
+	public void Start () {
 		rb = GetComponent<Rigidbody>();
 		Thrusters = GetComponentsInChildren<Thruster>();
 		Parts = GetComponentsInChildren<Part>();
@@ -40,8 +37,8 @@ public class Vessel : MonoBehaviour {
 		GetComponent<DrawStats>().enabled = true;
 		foreach (Thruster thruster in Thrusters) {
 			thruster.enabled = true;
+			thruster.Start();
 		}
-
 	}
 	
 	// Update is called once per frame
@@ -85,9 +82,12 @@ public class Vessel : MonoBehaviour {
 			}
 		}
 		TTW /= (-gravity * TotalMass);
+		if (Input.GetButtonDown("Jump")) {
+			BroadcastMessage("Start",null,SendMessageOptions.DontRequireReceiver);
+		}
 	}
 
-	void OnCollisionEnter(Collision other) {
+	/*void OnCollisionEnter(Collision other) {
 		Debug.Log(rb.velocity.magnitude);
-	}
+	}*/
 }

@@ -83,6 +83,12 @@ public static class ExtensionMethods {
 			);
 	}
 
+	public static JsonData GetDetails(string path) {
+		path = path + path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal));
+		string jsonString = File.ReadAllText(path + ".cfg");
+		return JsonMapper.ToObject(jsonString)["Details"];
+	}
+
 	private static void ParseCfg(GameObject go, string path) {
 		string jsonString = File.ReadAllText(path + ".cfg");
 		JsonData data = JsonMapper.ToObject(jsonString);
@@ -127,6 +133,9 @@ public static class ExtensionMethods {
 					go.transform.parent
 				);
 			}
+		}
+		if (tdictionary.Contains("Decoupler")) {
+			Decoupler decoupler = go.transform.parent.gameObject.AddComponent<Decoupler>();
 		}
 	}
 }

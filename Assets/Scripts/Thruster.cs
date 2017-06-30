@@ -29,10 +29,11 @@ public class Thruster : MonoBehaviour {
 
 	private Vessel vessel;
 	// Use this for initialization
-	void Start () {
+	public void Start () {
 		rb = transform.root.GetComponent<Rigidbody>();
 		vessel = transform.root.GetComponent<Vessel>();
 		flame = transform.GetComponentInChildren<ParticleSystem>(true).gameObject;
+		Debug.Log("test");
 	}
 	
 	// Update is called once per frame

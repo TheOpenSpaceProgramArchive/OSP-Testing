@@ -23,12 +23,15 @@ public class DrawStats : MonoBehaviour {
 		// Make a background box
 		GUI.Box(new Rect(0,0,width,(6 + 1) * 20), "Vessel Stats");
 		GUI.Label (new Rect (0,20,width,20), "Vertical Speed: " +
-		                                   rb.velocity.y.ToString("F3") + " m/s^2");
+		                                   rb.velocity.y.ToString("F3") + " m/s");
 		GUI.Label (new Rect (0,40,width,20), "Horizontal Speed: " +
-		                                   (rb.velocity.x + rb.velocity.z).ToString("F3") +
-		                                   " m/s^2");
+		                                   (
+			                               Mathf.Abs(rb.velocity.x) +
+		                                   Mathf.Abs(rb.velocity.z)
+			                               ).ToString("F3") +
+		                                   " m/s");
 		GUI.Label (new Rect (0,60,width,20), "Total Speed: " +
-		                                   rb.velocity.magnitude.ToString("F3") + " m/s^2");
+		                                   rb.velocity.magnitude.ToString("F3") + " m/s");
 		GUI.Label (new Rect (0,80,width,20), "Altitude: " +
 		                                   transform.position.y.ToString("F3") + " m");
 		GUI.Label (new Rect (0,100,width,20), "Fuel: " +
@@ -41,6 +44,9 @@ public class DrawStats : MonoBehaviour {
 		}
 		if (GUI.Button(new Rect(Screen.width - 80, 20, 80, 20), "Retrograde")) {
 			stats.SAS = "Retrograde";
+		}
+		if (GUI.Button(new Rect(Screen.width - 80, 40, 80, 20), "Stabilization")) {
+			stats.SAS = "Stabilization";
 		}
 
 
