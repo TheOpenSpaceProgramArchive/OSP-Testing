@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,17 +25,23 @@ public class Vessel : MonoBehaviour {
 	[SerializeField]
 	public bool ActiveVessel;
 
+	[SerializeField]
+	public int Stage = -1;
+
 	// Use this for initialization
 	public void Start () {
 		rb = GetComponent<Rigidbody>();
 		Thrusters = GetComponentsInChildren<Thruster>();
 		Parts = GetComponentsInChildren<Part>();
 		ResourceContainers = GetComponentsInChildren<ResourceContainer>();
+		Array.Reverse(ResourceContainers);
 
 		rb.useGravity = true;
 		rb.isKinematic = false;
+		if (GetComponent<DrawStats>()) {
 		GetComponent<ReactionWheel>().enabled = true;
 		GetComponent<DrawStats>().enabled = true;
+		}
 		foreach (Thruster thruster in Thrusters) {
 			thruster.enabled = true;
 			thruster.Start();
@@ -83,8 +90,14 @@ public class Vessel : MonoBehaviour {
 		}
 		TTW /= (-gravity * TotalMass);
 		if (Input.GetButtonDown("Jump")) {
-			BroadcastMessage("Start",null,SendMessageOptions.DontRequireReceiver);
+			StartCoroutine(DoStage());
 		}
+	}
+
+	IEnumerator DoStage() {
+		Stage++;
+		yield return new WaitForSeconds(0.1f);
+		BroadcastMessage("Start",null,SendMessageOptions.DontRequireReceiver);
 	}
 
 	/*void OnCollisionEnter(Collision other) {

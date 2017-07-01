@@ -1586,15 +1586,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4077719551899928, guid: 10c037e127820c0479383bd81539b39d, type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4077719551899928, guid: 10c037e127820c0479383bd81539b39d, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4077719551899928, guid: 10c037e127820c0479383bd81539b39d, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4077719551899928, guid: 10c037e127820c0479383bd81539b39d, type: 2}
       propertyPath: m_LocalRotation.w
@@ -1607,6 +1607,11 @@ Prefab:
     - target: {fileID: 1195608890910742, guid: 10c037e127820c0479383bd81539b39d, type: 2}
       propertyPath: m_Name
       value: Box
+      objectReference: {fileID: 0}
+    - target: {fileID: 114203621401129054, guid: 10c037e127820c0479383bd81539b39d,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 10c037e127820c0479383bd81539b39d, type: 2}
@@ -1786,7 +1791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9e7ee63fab35c49ae2b88c9a897b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: D:\Documents\Unity\OSP Testing\Data\OSP\Parts\Engines\125_coolie
+  path: 
   test: 0
   Vessel: {fileID: 174765909}
   symetry: 1

@@ -57,6 +57,24 @@ public static class ExtensionMethods {
 		return goparent;
 	}
 
+	public static GameObject LoadModel(string path, Vector3 pos, Quaternion rot, Transform goparent) {
+		path = path + path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal));
+		Mesh newmesh = ObjImporter.Instance.ImportFile(path + ".obj");
+
+		GameObject go = new GameObject();
+		MeshFilter goMeshFilter = go.AddComponent<MeshFilter>();
+		MeshRenderer goMeshRenderer = go.AddComponent<MeshRenderer>();
+		goMeshFilter.mesh = newmesh;
+		goMeshRenderer.material = Resources.Load<Material>("Standard");
+		goMeshRenderer.material.mainTexture = TextureLoader.LoadTexture(path + ".png");
+		go.name = path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+
+		go.transform.position = pos;
+		go.transform.rotation = rot;
+		go.transform.parent = goparent;
+		return go;
+	}
+
 	public static GameObject InstantiateOut(string path, Vector3 pos, Quaternion rot, Transform goparent) {
 		GameObject go = InstantiateOut(path);
 		go.transform.position = pos;
@@ -86,7 +104,7 @@ public static class ExtensionMethods {
 	public static JsonData GetDetails(string path) {
 		path = path + path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal));
 		string jsonString = File.ReadAllText(path + ".cfg");
-		return JsonMapper.ToObject(jsonString)["Details"];
+		return JsonMapper.ToObject(jsonString);
 	}
 
 	private static void ParseCfg(GameObject go, string path) {
@@ -115,6 +133,8 @@ public static class ExtensionMethods {
 				go.transform.parent
 			);
 			flame.SetActive(false);
+
+			go.transform.parent.gameObject.AddComponent<Staged>();
 		}
 
 		if (tdictionary.Contains("ResourceContainer")) {
@@ -135,7 +155,8 @@ public static class ExtensionMethods {
 			}
 		}
 		if (tdictionary.Contains("Decoupler")) {
-			Decoupler decoupler = go.transform.parent.gameObject.AddComponent<Decoupler>();
+			go.transform.parent.gameObject.AddComponent<Decoupler>();
+			go.transform.parent.gameObject.AddComponent<Staged>();
 		}
 	}
 }

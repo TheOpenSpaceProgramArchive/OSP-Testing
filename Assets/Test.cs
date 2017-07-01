@@ -2,22 +2,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
-using LitJson;
-
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour {
-	private string jsonString;
-	private JsonData data;
 
+	public List<String> parts = new List<string>();
 
-	void Start() {
-		jsonString = File.ReadAllText("D:\\Documents\\Unity\\OSP Testing\\Data\\OSP\\test.cfg");
-		data = JsonMapper.ToObject(jsonString);
-		IDictionary tdictionary = data as IDictionary;
+	public string[] folders;
+	public List<string> CategoryName = new List<string>();
+	public List<List<string>> Parts = new List<List<string>>();
 
+	[SerializeField]
+	private GameObject list;
 
+	public float scale = 1;
+
+	// Use this for initialization
+	void Start () {
+		folders = Directory.GetDirectories(
+			Application.dataPath + "/../Data/OSP/Parts"
+		);
+		for (int i = 0; i < folders.Length; i++) {
+			CategoryName.Add(folders[i].Substring(folders[i].LastIndexOf("\\") + 1));
+
+			Parts.Add(
+				new List<string>(Directory.GetDirectories(
+					Application.dataPath + "/../Data/OSP/Parts/" + CategoryName[i])
+				)
+			);
+		}
+
+		for (int i = 0; i < CategoryName.Count; i++) {
+			for (int j = 0; j < Parts[i].Count; j++) {
+				var part = Parts[i][j];
+				parts.Add(part);
+
+			}
+		}
 	}
-
 }

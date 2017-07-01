@@ -27,14 +27,17 @@ public class MouseManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
+
+		//Start The Vessel
 		if (test) {
+			//Removes all snappoints
 			GameObject[] snappoints = GameObject.FindGameObjectsWithTag("Snappoint");
 			foreach (GameObject snappoint in snappoints) {
 				Destroy(snappoint.gameObject);
 			}
 			Vessel.GetComponent<Vessel>().enabled = true;
 
-
+			//Get the lowest position of the Vessel
 			Transform[] vesselchilds = Vessel.GetComponentsInChildren<Transform>();
 			GameObject lowestChild = Vessel;
 			foreach (Transform child in vesselchilds) {
@@ -43,23 +46,28 @@ public class MouseManager : MonoBehaviour {
 				}
 			}
 			Mesh mesh = lowestChild.GetComponent<MeshFilter>().mesh;
+
 			Vector3[] vertices = mesh.vertices;
-			float lowest = 0f;
-			int iasda = 0;
-			while (iasda < vertices.Length) {
-				if(vertices[iasda].z > lowest) lowest = vertices[iasda].z;
-				iasda++;
-			}
-			Instantiate(
-				Resources.Load("Plane"),
-				new Vector3(0f, lowestChild.transform.position.y + lowest, 0f),
-				Quaternion.identity
-			);
+				float lowest = 0f;
+				int i = 0;
+				while (i < vertices.Length) {
+					if (vertices[i].z > lowest) lowest = vertices[i].z;
+					i++;
+				}
+
+			//Loads the plane, and put it on the lowest position
+				Instantiate(
+					Resources.Load("Plane"),
+					new Vector3(0f, lowestChild.transform.position.y - Mathf.Abs(lowest), 0f),
+					Quaternion.identity
+				);
+
 
 			test = false;
 		}
-		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		//Gets MouseButton and Spawns your object
 		if (Input.GetMouseButtonDown(0)) {
 			if (Physics.Raycast(ray, out hit)) {
 				if (hit.collider.CompareTag("Snappoint")) {
@@ -73,17 +81,16 @@ public class MouseManager : MonoBehaviour {
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
-					if (hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
-						Decoupler decoupler = go.AddComponent<Decoupler>();
-						if (hit.collider.transform.parent.GetComponent<Decoupler>().Parent != null) {
-							decoupler.Parent = hit.collider.transform.parent.GetComponent<Decoupler>().Parent;
-						}
-						else {
-						decoupler.Parent = hit.collider.transform.parent.gameObject;
-						}
+					if (hit.collider.transform.parent.GetComponent<DecouplerKid>() != null) {
+						DecouplerKid decoupler = go.AddComponent<DecouplerKid>();
+						decoupler.Parent = hit.collider.transform.parent.GetComponent<DecouplerKid>().Parent;
 					}
-
-					if (symetry > 1) {
+					if(hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
+						DecouplerKid decoupler = go.AddComponent<DecouplerKid>();
+						decoupler.Parent = hit.collider.transform.parent.gameObject;
+					}
+			//Check if symetry is enabled, and spawn more objects
+			if (symetry > 1) {
 						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
 						    Mathf.Abs(spawnpoint.z) > 0.1f) {
 							for (var i = 1; i < symetry; i++) {
@@ -100,6 +107,7 @@ public class MouseManager : MonoBehaviour {
 			}
 		}
 
+/* Translation Gizmos FIXME
 		if (Input.GetMouseButton(0)) {
 			if (gizmo != null) {
 				if (gizmo.name == "X") {
@@ -124,6 +132,7 @@ public class MouseManager : MonoBehaviour {
 			gizmo = null;
 		}
 
+
 		if (Input.GetMouseButtonDown(1)) {
 			if (Physics.Raycast(ray, out hit)) {
 				if (hit.collider.transform.parent.CompareTag("Part")) {
@@ -141,7 +150,7 @@ public class MouseManager : MonoBehaviour {
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 

@@ -48,7 +48,7 @@ public class ListParts : MonoBehaviour {
 				var part = Parts[i][j];
 				parts.Add(part);
 				_dropdown.options.Add(new Dropdown.OptionData() {
-					text = ExtensionMethods.GetDetails(Parts[i][j])["Name"].ToString()
+					text = ExtensionMethods.GetDetails(part)["Details"]["Name"].ToString()
 				});
 			}
 		}
