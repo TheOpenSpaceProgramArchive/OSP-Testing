@@ -47,8 +47,8 @@ public class ReactionWheel : MonoBehaviour {
 	void FixedUpdate () {
 		rb.AddRelativeTorque(
 			Input.GetAxis("Vertical") * torqueMultiplier,
-			-Input.GetAxis("Roll") * torqueMultiplier,
-			-Input.GetAxis("Horizontal") * torqueMultiplier
+			Input.GetAxis("Horizontal") * torqueMultiplier,
+			-Input.GetAxis("Roll") * torqueMultiplier
 		);
 
 		if (vessel.SAS == "Prograde") {

@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class MouseManager : MonoBehaviour {
 	[SerializeField]
-	public string path = "Box";
+	public string path = null;
 	[SerializeField]
 	public bool test = false;
 	[SerializeField]
-	private GameObject Vessel;
+	private GameObject _vessel;
 
 	[SerializeField]
 	private int symetry = 1;
@@ -20,6 +20,10 @@ public class MouseManager : MonoBehaviour {
 	private GameObject gizmo = null;
 
 	private GameObject translationGizmo = null;
+
+	private int LastStage = 0;
+
+	private bool isblank = true;
 	// Use this for initialization
 	void Start() {
 		cam = Camera.main;
@@ -27,6 +31,26 @@ public class MouseManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
+		if (isblank) {
+			if (path != null && path != "") {
+				_vessel = ExtensionMethods.InstantiateOut(
+					path,
+					Vector3.zero,
+					Quaternion.Euler(-90,0,0)
+				);
+				Vessel vessel = _vessel.AddComponent<Vessel>();
+				vessel.enabled = false;
+				Rigidbody rb = _vessel.AddComponent<Rigidbody>();
+				rb.isKinematic = true;
+				rb.useGravity = false;
+				DrawStats drawStats = _vessel.AddComponent<DrawStats>();
+				drawStats.enabled = false;
+				_vessel.AddComponent<ReactionWheel>();
+				cam.transform.root.GetComponent<VesselCamera>().init(_vessel);
+
+				isblank = false;
+			}
+		}
 
 		//Start The Vessel
 		if (test) {
@@ -35,11 +59,12 @@ public class MouseManager : MonoBehaviour {
 			foreach (GameObject snappoint in snappoints) {
 				Destroy(snappoint.gameObject);
 			}
-			Vessel.GetComponent<Vessel>().enabled = true;
+			_vessel.GetComponent<Vessel>().enabled = true;
+			_vessel.GetComponent<Vessel>().Stage = LastStage;
 
 			//Get the lowest position of the Vessel
-			Transform[] vesselchilds = Vessel.GetComponentsInChildren<Transform>();
-			GameObject lowestChild = Vessel;
+			Transform[] vesselchilds = _vessel.GetComponentsInChildren<Transform>();
+			GameObject lowestChild = _vessel;
 			foreach (Transform child in vesselchilds) {
 				if (child.position.y < lowestChild.transform.position.y) {
 					lowestChild = child.gameObject;
@@ -81,25 +106,43 @@ public class MouseManager : MonoBehaviour {
 						hit.collider.transform.rotation,
 						hit.collider.transform.root
 					);
+					go.GetComponent<Part>().Parent = hit.collider.transform.parent.gameObject;
+
+					if(hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
+						DecouplerKid decoupler = go.AddComponent<DecouplerKid>();
+						decoupler.Parent = hit.collider.transform.parent.gameObject;
+					} else
 					if (hit.collider.transform.parent.GetComponent<DecouplerKid>() != null) {
 						DecouplerKid decoupler = go.AddComponent<DecouplerKid>();
 						decoupler.Parent = hit.collider.transform.parent.GetComponent<DecouplerKid>().Parent;
 					}
-					if(hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
-						DecouplerKid decoupler = go.AddComponent<DecouplerKid>();
-						decoupler.Parent = hit.collider.transform.parent.gameObject;
+
+					if (go.GetComponent<Staged>()) {
+						go.GetComponent<Staged>().Stage = LastStage;
+						LastStage++;
 					}
 			//Check if symetry is enabled, and spawn more objects
 			if (symetry > 1) {
 						if (Mathf.Abs(spawnpoint.x) > 0.1f ||
 						    Mathf.Abs(spawnpoint.z) > 0.1f) {
 							for (var i = 1; i < symetry; i++) {
-								ExtensionMethods.InstantiateOut(
+								GameObject symgo = ExtensionMethods.InstantiateOut(
 									path,
 									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * spawnpoint,
 									Quaternion.AngleAxis(360 / symetry * i, Vector3.up) * hit.collider.transform.rotation,
 									hit.collider.transform.root
 								);
+								if(hit.collider.transform.parent.GetComponent<Decoupler>() != null) {
+									DecouplerKid decoupler = symgo.AddComponent<DecouplerKid>();
+									decoupler.Parent = hit.collider.transform.parent.gameObject;
+								} else
+								if (hit.collider.transform.parent.GetComponent<DecouplerKid>() != null) {
+									DecouplerKid decoupler = symgo.AddComponent<DecouplerKid>();
+									decoupler.Parent = hit.collider.transform.parent.GetComponent<DecouplerKid>().Parent;
+								}
+								if (symgo.GetComponent<Staged>()) {
+									symgo.GetComponent<Staged>().Stage = LastStage;
+								}
 							}
 						}
 					}

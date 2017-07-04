@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
@@ -25,9 +26,9 @@ public class DrawStats : MonoBehaviour {
 		GUI.Label (new Rect (0,20,width,20), "Vertical Speed: " +
 		                                   rb.velocity.y.ToString("F3") + " m/s");
 		GUI.Label (new Rect (0,40,width,20), "Horizontal Speed: " +
-		                                   (
-			                               Mathf.Abs(rb.velocity.x) +
-		                                   Mathf.Abs(rb.velocity.z)
+		                                   Math.Sqrt(
+			                               Mathf.Pow(rb.velocity.x, 2) +
+		                                   Mathf.Pow(rb.velocity.z, 2)
 			                               ).ToString("F3") +
 		                                   " m/s");
 		GUI.Label (new Rect (0,60,width,20), "Total Speed: " +

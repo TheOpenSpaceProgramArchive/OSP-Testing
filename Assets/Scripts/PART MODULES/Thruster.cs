@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.iOS;
 using UnityEngine;
 
 public class Thruster : MonoBehaviour {
@@ -27,20 +28,29 @@ public class Thruster : MonoBehaviour {
 	private GameObject flame;
 	private Vessel vessel;
 	private Staged staged;
+	private Part part;
+	private ResourceContainer parentRes;
+
+	private bool pump;
 	// Use this for initialization
 	public void Start () {
 		rb = transform.root.GetComponent<Rigidbody>();
 		vessel = transform.root.GetComponent<Vessel>();
 		flame = transform.GetComponentInChildren<ParticleSystem>(true).gameObject;
 		staged = GetComponent<Staged>();
+		part = GetComponent<Part>();
+
+		if (part.Parent.GetComponent<ResourceContainer>()) {
+			parentRes = part.Parent.GetComponent<ResourceContainer>();
+			pump = true;
+		}
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate() {
 		if (staged.IsStaged) {
-			if (vessel.TotalFuel > 0) {
+			if (pump && parentRes.LiquidFuel > 0) {
 				throtle = vessel.Throtle;
-
 				if (thrust != 0f) {
 					mfr = thrust / (isp * gravity) * throtle / 100;
 
@@ -48,7 +58,14 @@ public class Thruster : MonoBehaviour {
 					//Thrust=Mass ejection rate×Speed of ejection
 					TTW = (mfr * exhaustvelocity) / (vessel.TotalMass * -gravity);
 
-					vessel.UsedFuel += mfr;
+					//OLD: vessel.UsedFuel += mfr;
+					/*if (parentRes.LiquidFuel + mfr >= 0) {
+						parentRes.LiquidFuel += mfr;
+					} else if (parentRes.LiquidFuel > 0) {
+						parentRes.LiquidFuel = 0;
+					}*/
+
+
 
 					rb.AddForceAtPosition(
 						TTW * gravity * transform.forward,

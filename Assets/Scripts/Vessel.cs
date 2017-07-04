@@ -26,7 +26,8 @@ public class Vessel : MonoBehaviour {
 	public bool ActiveVessel;
 
 	[SerializeField]
-	public int Stage = -1;
+	public int Stage = 1000;
+
 
 	// Use this for initialization
 	public void Start () {
@@ -95,7 +96,7 @@ public class Vessel : MonoBehaviour {
 	}
 
 	IEnumerator DoStage() {
-		Stage++;
+		Stage--;
 		yield return new WaitForSeconds(0.1f);
 		BroadcastMessage("Start",null,SendMessageOptions.DontRequireReceiver);
 	}

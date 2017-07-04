@@ -11,13 +11,12 @@ public class Staged : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		vessel = transform.root.gameObject.GetComponent<Vessel>();
-		Debug.Log(IsStaged);
-	}
+     	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (!IsStaged) {
-			if (vessel.Stage >= Stage) {
+			if (vessel.Stage <= Stage) {
 				IsStaged = true;
 			}
 		}

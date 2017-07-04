@@ -19,8 +19,10 @@ public class Test : MonoBehaviour {
 
 	public float scale = 1;
 
+	private GameObject _scripts;
 	// Use this for initialization
 	void Start () {
+		_scripts = GameObject.Find("_Scripts");
 		folders = Directory.GetDirectories(
 			Application.dataPath + "/../Data/OSP/Parts"
 		);
@@ -38,8 +40,19 @@ public class Test : MonoBehaviour {
 			for (int j = 0; j < Parts[i].Count; j++) {
 				var part = Parts[i][j];
 				parts.Add(part);
+				GameObject button = (GameObject)Instantiate(Resources.Load("UI/Button"), list.transform);
+				button.GetComponentInChildren<Text>().text =
+					ExtensionMethods.GetDetails(part)["Details"]["Name"].ToString();
+
+				button.GetComponent<Button>().onClick.AddListener(delegate() {
+					Click(part);
+				});
 
 			}
 		}
+	}
+
+	public void Click(string path) {
+		_scripts.GetComponent<MouseManager>().path = path;
 	}
 }

@@ -42,8 +42,8 @@ public static class ExtensionMethods {
 		GameObject go = new GameObject();
 		MeshFilter goMeshFilter = go.AddComponent<MeshFilter>();
 		MeshRenderer goMeshRenderer = go.AddComponent<MeshRenderer>();
-		MeshCollider goMeshCollider =go.AddComponent<MeshCollider>();
 		goMeshFilter.mesh = newmesh;
+		MeshCollider goMeshCollider =go.AddComponent<MeshCollider>();
 		goMeshCollider.sharedMesh = newmesh;
 		goMeshCollider.convex = true;
 		goMeshRenderer.material = Resources.Load<Material>("Standard");
