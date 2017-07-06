@@ -73,7 +73,7 @@ public class Vessel : MonoBehaviour {
 			TotalMass += part.mass;
 		}
 		foreach (var thruster in Thrusters) {
-			TTW += thruster.mfr * thruster.exhaustvelocity;
+			TTW += thruster.MassFlowRate * thruster.ExhaustVelocity;
 		}
 		foreach (var resourceContainer in ResourceContainers) {
 			TotalFuel += resourceContainer.LiquidFuel;
@@ -93,6 +93,8 @@ public class Vessel : MonoBehaviour {
 		if (Input.GetButtonDown("Jump")) {
 			StartCoroutine(DoStage());
 		}
+
+		rb.mass = TotalMass;
 	}
 
 	IEnumerator DoStage() {

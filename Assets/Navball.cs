@@ -5,6 +5,9 @@ using UnityEngine;
 public class Navball : MonoBehaviour {
 	private GameObject vessel = null;
 
+	[SerializeField]
+	Vector3 test = Vector3.up;
+
 	private Rigidbody rb = null;
 	// Use this for initialization
 	void Start () {
@@ -17,7 +20,7 @@ public class Navball : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (vessel != null) {
-			transform.localRotation = Quaternion.LookRotation(rb.velocity, vessel.transform.up);
+			transform.localRotation = Quaternion.LookRotation(rb.velocity, test);
 		}
 	}
 }

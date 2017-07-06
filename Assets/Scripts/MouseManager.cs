@@ -22,8 +22,8 @@ public class MouseManager : MonoBehaviour {
 	private GameObject translationGizmo = null;
 
 	private int LastStage = 0;
-
 	private bool isblank = true;
+	private GameObject Placeholder;
 	// Use this for initialization
 	void Start() {
 		cam = Camera.main;
@@ -146,8 +146,29 @@ public class MouseManager : MonoBehaviour {
 							}
 						}
 					}
+					if (Placeholder != null) {
+						Destroy(Placeholder.gameObject);
+						Placeholder = null;
+					}
 				}
 			}
+		}
+		if (Physics.Raycast(ray, out hit)) {
+			if (hit.collider.CompareTag("Snappoint")) {
+				if (Placeholder == null) {
+					Vector3 spawnpoint = hit.collider.transform.position +
+					                     hit.collider.transform.rotation *
+					                     Vector3.forward * 0.5f;
+					Placeholder = ExtensionMethods.InstantiatePlaceholder(
+						path,
+						spawnpoint,
+						hit.collider.transform.rotation
+					);
+				}
+			}
+		} else if (Placeholder != null) {
+			Destroy(Placeholder.gameObject);
+			Placeholder = null;
 		}
 
 /* Translation Gizmos FIXME

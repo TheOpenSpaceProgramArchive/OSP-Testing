@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using LitJson;
 
 
@@ -43,7 +44,7 @@ public static class ExtensionMethods {
 		MeshFilter goMeshFilter = go.AddComponent<MeshFilter>();
 		MeshRenderer goMeshRenderer = go.AddComponent<MeshRenderer>();
 		goMeshFilter.mesh = newmesh;
-		MeshCollider goMeshCollider =go.AddComponent<MeshCollider>();
+		MeshCollider goMeshCollider = go.AddComponent<MeshCollider>();
 		goMeshCollider.sharedMesh = newmesh;
 		goMeshCollider.convex = true;
 		goMeshRenderer.material = Resources.Load<Material>("Standard");
@@ -90,6 +91,35 @@ public static class ExtensionMethods {
 		return go;
 	}
 
+	public static GameObject InstantiatePlaceholder(string path, Vector3 pos, Quaternion rot) {
+		Quaternion gorot = Quaternion.Euler(VectorParse(GetDetails(path)["Part"]["Rotation"]));
+		Vector3 gopos = VectorParse(GetDetails(path)["Part"]["Position"]);
+		Vector3 goscale = VectorParse(GetDetails(path)["Part"]["Scale"]);
+		path = ParsePath(path);
+		Mesh newmesh = ObjImporter.Instance.ImportFile(path + ".obj");
+		GameObject go = new GameObject();
+		MeshFilter goMeshFilter = go.AddComponent<MeshFilter>();
+		MeshRenderer goMeshRenderer = go.AddComponent<MeshRenderer>();
+		goMeshFilter.mesh = newmesh;
+		goMeshRenderer.material = Resources.Load<Material>("StandardFade");
+		goMeshRenderer.material.mainTexture = TextureLoader.LoadTexture(path + ".png");
+		goMeshRenderer.material.SetColor("_Color", new Color(1f,1f,1f,0.5f));
+
+		GameObject goparent = new GameObject();
+		goparent.name = "Placeholder " +
+		path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+
+		goparent.transform.position = pos;
+		goparent.transform.rotation = rot;
+		go.transform.parent = goparent.transform;
+
+		go.transform.localPosition = gopos;
+		go.transform.localRotation = gorot;
+		go.transform.localScale = goscale;
+
+		return goparent;
+	}
+
 	private static float floatParse(LitJson.JsonData data) {
 		return float.Parse(data.ToString());
 	}
@@ -102,9 +132,13 @@ public static class ExtensionMethods {
 	}
 
 	public static JsonData GetDetails(string path) {
-		path = path + path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal));
+		path = ParsePath(path);
 		string jsonString = File.ReadAllText(path + ".cfg");
 		return JsonMapper.ToObject(jsonString);
+	}
+
+	public static string ParsePath(string path) {
+		return path + path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal));
 	}
 
 	private static void ParseCfg(GameObject go, string path) {
@@ -124,8 +158,8 @@ public static class ExtensionMethods {
 		if (tdictionary.Contains("Thruster")) {
 			Thruster thruster = go.transform.parent.gameObject.AddComponent<Thruster>();
 			thruster.enabled = false;
-			thruster.isp = floatParse(data["Thruster"]["ISP"]);
-			thruster.thrust = floatParse(data["Thruster"]["Thrust"]);
+			thruster.ISP = floatParse(data["Thruster"]["ISP"]);
+			thruster.Thrust = floatParse(data["Thruster"]["Thrust"]);
 			GameObject flame = (GameObject) Object.Instantiate(
 				Resources.Load("Flame"),
 				VectorParse(data["Thruster"]["Flame"]["Position"]),

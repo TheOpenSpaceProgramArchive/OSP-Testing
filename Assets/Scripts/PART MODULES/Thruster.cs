@@ -1,26 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.iOS;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Thruster : MonoBehaviour {
-	[SerializeField]
-	public float isp = 250f;       //s
-
-	public float gravity = -9.807f; //m/s^2
-	[SerializeField]
-	public float mfr = 0f;   //fuel/s
-	[SerializeField]
-	public float thrust = 168750; //Newtons
-	[SerializeField]
-	public float throtle = 0;
-
-	[SerializeField]
-	public float exhaustvelocity = 0f;
-
-	[SerializeField]
+	public float ISP = 250f;       //s
+	public float gravity = 9.80665f; //m/s^2
+	public float MassFlowRate = 0f;   //fuel/s
+	public float Thrust = 0f; //Newtons
+	public float Throtle = 0;
+	public float ExhaustVelocity = 0f;
 	public Vector3 Vel;
-	[SerializeField]
 	public float TTW = 0f;
 
 
@@ -47,38 +34,48 @@ public class Thruster : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate() {
+	void Update() {
 		if (staged.IsStaged) {
-			if (pump && parentRes.LiquidFuel > 0) {
-				throtle = vessel.Throtle;
-				if (thrust != 0f) {
-					mfr = thrust / (isp * gravity) * throtle / 100;
+			Throtle = vessel.Throtle;
+			if (Throtle > 0f) {
+				ExhaustVelocity = gravity * ISP;
+				MassFlowRate = Thrust / (ExhaustVelocity) * Throtle / 100;
+				//Thrust = MassFlowRate * ExhaustVelocity * Throtle / 100;
 
-					exhaustvelocity = gravity * isp;
-					//Thrust=Mass ejection rate×Speed of ejection
-					TTW = (mfr * exhaustvelocity) / (vessel.TotalMass * -gravity);
+			parentRes.SendMessage("SendFuel", new ResourceParams(
+				"LiquidFuel",
+				Mathf.Abs(MassFlowRate * Throtle/100 * Time.deltaTime),
+				gameObject)
+			);
+			}
+		}
+		else {
+			flame.SetActive(false);
+		}
+	}
 
-					//OLD: vessel.UsedFuel += mfr;
-					/*if (parentRes.LiquidFuel + mfr >= 0) {
-						parentRes.LiquidFuel += mfr;
-					} else if (parentRes.LiquidFuel > 0) {
-						parentRes.LiquidFuel = 0;
-					}*/
-
-
-
+	public void ReceiveFuel(ResourceParams data) {
+		switch (data.Type) {
+			case "LiquidFuel":
+				if (data.Amount > 0) {
 					rb.AddForceAtPosition(
-						TTW * gravity * transform.forward,
+						//Should make this use something relative to the amount of fuel recived
+						(MassFlowRate * ExhaustVelocity * Throtle / 100) * -transform.forward,
 						transform.position,
 						ForceMode.Force
 					);
+					flame.SetActive(true);
 				}
-				flame.SetActive(throtle > 0);
-			}
-			else {
-				flame.SetActive(false);
-			}
+				else {
+					flame.SetActive(false);
+				}
+				break;
 
+			default:
+				Debug.LogError("ReceiveFuel Recives Default");
+				break;
 		}
+
 	}
 }
+

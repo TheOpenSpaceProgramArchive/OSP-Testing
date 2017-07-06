@@ -13,11 +13,13 @@ public class ResourceContainer : MonoBehaviour {
 	public float LiquidFuel = 0; //Liters
 	private float LFDensity = 1/3f;
 
-	private float maxLiquidFuel;
-
 	[SerializeField]
 	public float Oxidizer;
 	private float ODensity = 0.2f;
+
+	private float maxLiquidFuel;
+
+
 
 	private bool pump = false;
 	private float flowrate = 100; //TODO: CHANGE THIS VALUE WHEN BALANCING
@@ -25,29 +27,62 @@ public class ResourceContainer : MonoBehaviour {
 	private ResourceContainer parentRes;
 	// Use this for initialization
 	void Start () {
+		maxLiquidFuel = LiquidFuel;
 		part = GetComponent<Part>();
 		if (part.Parent.GetComponent<ResourceContainer>()) {
 			pump = true;
 			parentRes = part.Parent.GetComponent<ResourceContainer>();
 		}
-		maxLiquidFuel = LiquidFuel;
+
+
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-		part.mass = 0;
-		part.mass += DryMass;
-		part.mass += LiquidFuel * LFDensity;
-		part.mass += Oxidizer * ODensity;
-
-		if (pump && maxLiquidFuel > LiquidFuel + flowrate) {
-			if (parentRes.LiquidFuel - flowrate >= 0) {
-				parentRes.LiquidFuel -= flowrate;
-				LiquidFuel += flowrate;
-			} else if (parentRes.LiquidFuel > 0) {
-				LiquidFuel += parentRes.LiquidFuel;
-				parentRes.LiquidFuel = 0;
-			}
+	void Update () {
+		part.mass = DryMass +
+			        LiquidFuel * LFDensity +
+			        Oxidizer * ODensity;
+		if (pump && LiquidFuel < maxLiquidFuel) {
+			part.Parent.SendMessage("SendFuel", new ResourceParams(
+				"LiquidFuel",
+				Mathf.Abs(flowrate * Time.deltaTime),
+				gameObject)
+			);
 		}
+	}
+
+	public void SendFuel(ResourceParams data) {
+		switch (data.Type) {
+			case "LiquidFuel":
+				if (LiquidFuel - data.Amount > 0) {
+					LiquidFuel -= data.Amount;
+					data.Sender.SendMessage("ReceiveFuel", data);
+				} else if (LiquidFuel >= 0) {
+					data.Amount = LiquidFuel;
+					LiquidFuel = 0;
+					data.Sender.SendMessage("ReceiveFuel", data);
+				}
+				break;
+
+			default:
+				Debug.LogError("SendFuel Recives Default");
+				break;
+
+		}
+	}
+
+	public void ReceiveFuel(ResourceParams data) {
+		switch (data.Type) {
+			case "LiquidFuel":
+				if (data.Amount >= 0) {
+					LiquidFuel += data.Amount;
+				}
+				break;
+
+			default:
+				Debug.LogError("ReceiveFuel Recives Default");
+				break;
+		}
+
 	}
 }
