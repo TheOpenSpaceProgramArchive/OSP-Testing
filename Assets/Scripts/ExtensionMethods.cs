@@ -70,6 +70,8 @@ public static class ExtensionMethods {
 		goMeshRenderer.material.mainTexture = TextureLoader.LoadTexture(path + ".png");
 		go.name = path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal) + 1);
 
+
+
 		go.transform.position = pos;
 		go.transform.rotation = rot;
 		go.transform.parent = goparent;
@@ -117,6 +119,7 @@ public static class ExtensionMethods {
 		go.transform.localRotation = gorot;
 		go.transform.localScale = goscale;
 
+
 		return goparent;
 	}
 
@@ -153,6 +156,8 @@ public static class ExtensionMethods {
 			go.transform.localPosition = VectorParse(data["Part"]["Position"]);
 			go.transform.localRotation = Quaternion.Euler(VectorParse(data["Part"]["Rotation"]));
 			go.transform.localScale = VectorParse(data["Part"]["Scale"]);
+
+
 		}
 
 		if (tdictionary.Contains("Thruster")) {

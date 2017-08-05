@@ -20,7 +20,7 @@ public class Vessel : MonoBehaviour {
 	[SerializeField]
 	public float Throtle = 0f;
 	private Rigidbody rb;
-	private float gravity = -9.807f;
+	private float gravity = 9.807f;
 
 	[SerializeField]
 	public bool ActiveVessel;
@@ -37,7 +37,7 @@ public class Vessel : MonoBehaviour {
 		ResourceContainers = GetComponentsInChildren<ResourceContainer>();
 		Array.Reverse(ResourceContainers);
 
-		rb.useGravity = true;
+		//rb.useGravity = true;
 		rb.isKinematic = false;
 		if (GetComponent<DrawStats>()) {
 		GetComponent<ReactionWheel>().enabled = true;
@@ -47,6 +47,8 @@ public class Vessel : MonoBehaviour {
 			thruster.enabled = true;
 			thruster.Start();
 		}
+
+		//gameObject.AddComponent<CalculateOrbit>();
 	}
 	
 	// Update is called once per frame
@@ -89,12 +91,16 @@ public class Vessel : MonoBehaviour {
 				UsedFuel = 0;
 			}
 		}
-		TTW /= (-gravity * TotalMass);
+		TTW /= (gravity * TotalMass);
 		if (Input.GetButtonDown("Jump")) {
 			StartCoroutine(DoStage());
 		}
 
 		rb.mass = TotalMass;
+		if (!rb.isKinematic) {
+			Vector3 dir = (transform.position - GameObject.Find("Planet").transform.position).normalized;
+			rb.velocity -= dir * gravity * Time.deltaTime;
+		}
 	}
 
 	IEnumerator DoStage() {

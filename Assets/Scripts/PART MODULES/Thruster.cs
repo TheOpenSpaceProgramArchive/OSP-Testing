@@ -47,6 +47,8 @@ public class Thruster : MonoBehaviour {
 				Mathf.Abs(MassFlowRate * Throtle/100 * Time.deltaTime),
 				gameObject)
 			);
+			} else {
+				flame.SetActive(false);
 			}
 		}
 		else {
@@ -72,7 +74,7 @@ public class Thruster : MonoBehaviour {
 				break;
 
 			default:
-				Debug.LogError("ReceiveFuel Recives Default");
+				Debug.LogError("ReceiveFuel Receives Default");
 				break;
 		}
 

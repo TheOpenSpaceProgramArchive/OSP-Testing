@@ -31,7 +31,7 @@ public class VesselCamera : MonoBehaviour {
 			transform.GetChild(0).transform.localPosition = Vector3.forward * zoom;
 
 			if (Input.GetMouseButton(1)) {
-				transform.eulerAngles +=
+			transform.eulerAngles +=
 					new Vector3(
 						-Input.GetAxis("Mouse Y") * rotspeed,
 						Input.GetAxis("Mouse X") * rotspeed,
